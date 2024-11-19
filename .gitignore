@@ -1,0 +1,10 @@
+venv/
+.idea
+.coverage
+.tox/
+htmlcov
+*/__pycache__/*
+*.egg-info/
+*.pyc
+dist
+twine.ini

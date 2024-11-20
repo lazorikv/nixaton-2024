@@ -26,28 +26,48 @@ class Direction(StrEnum):
 class Position:
     i: int
     j: int
-    direction: Direction | None
+    type: CellType
+    direction: Direction | None = None
 
+
+@dataclass
+class Matrix:
+    cells: list[Position]
 
 @dataclass
 class ParsedData:
     player: Position
     enemies: list[Position]
+    matrix: Matrix
 
 
 def is_player_position(cell: str) -> bool:
-    return cell.startswith("P")
+    return cell.startswith(CellType.PLAYER)
 
 
 def is_enemy_position(cell: str) -> bool:
-    return cell.startswith("E")
+    return cell.startswith(CellType.ENEMY)
+
+
+def is_asteroid_position(cell: str) -> bool:
+    return cell == CellType.ASTEROID
+
+
+def is_coin_position(cell: str) -> bool:
+    return cell == CellType.COIN
+
+
+def is_empty_position(cell: str) -> bool:
+    return cell == CellType.EMPTY
 
 
 def get_player_direction(cell: str) -> Direction:
-    return cell[-1]
+    # cause of the bug with ENORTH instead of the EN, etc
+    return cell[1]
 
 
 def parse_data(input: Input) -> ParsedData:
+    cells = []
     player = None
     enemies = []
 
@@ -59,9 +79,15 @@ def parse_data(input: Input) -> ParsedData:
             cell = matrix[i][j]
 
             if is_player_position(cell):
-                player = Position(i, j, cell[-1])
+                player = Position(i, j, CellType.PLAYER, get_player_direction(cell),)
+                cells.append(player)
 
             elif is_enemy_position(cell):
-                enemies.append(Position(i, j, cell[-1]))
+                enemy = Position(i, j, CellType.ENEMY, get_player_direction(cell))
+                enemies.append(enemy)
+                cells.append(enemy)
+            
+            else:
+                cells.append(Position(i, j, type=cell))
 
-    return ParsedData(player, enemies)
+    return ParsedData(player, enemies, Matrix(cells))

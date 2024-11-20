@@ -3,6 +3,7 @@ from enum import StrEnum
 
 from models import Input
 
+
 # Map size is N x N
 N = 13
 

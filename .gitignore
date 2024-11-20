@@ -8,3 +8,5 @@ htmlcov
 *.pyc
 dist
 twine.ini
+*.pem
+.python-version
